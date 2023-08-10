@@ -1,7 +1,13 @@
 package main
 
+import "log"
+
 
 func main() {
-	server := newAPIServer(":3000")
+	store, err := NewPostgresStore()
+	if err != nil {
+		log.Fatal(err)
+	}
+	server := newAPIServer(":3000", store)
 	server.Run()
 }
