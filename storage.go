@@ -15,6 +15,7 @@ type Storage interface {
 type PostgresStore struct {
 	db *sql.DB
 }
+
 func NewPostgresStore() (*PostgresStore, error) {
 	connStr := "user=postgres dbname=postgres password=goBank sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
@@ -26,6 +27,26 @@ func NewPostgresStore() (*PostgresStore, error) {
 	}
 	return &PostgresStore{db: db}, nil
 }
+
+func (s *PostgresStore) Init() error {
+	return s.CreateAccountTable()
+}
+
+
+func (s *PostgresStore) CreateAccountTable() error {
+	query := `CREATE TABLE IF NOT EXISTS account (
+		id SERIAL PRIMARY KEY, 
+		firstName VARCHAR(50),
+		lastName VARCHAR(50),
+		number serial, 
+		balance FLOAT,
+		created_at timestamp
+		)`
+	_, err := s.db.Exec(query)
+	return err
+
+}
+
 
 
 
